@@ -15,7 +15,6 @@
             background-color: #000;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             color: #fff;
-            /* Empêche la sélection de texte comme une app native */
             user-select: none;
             -webkit-user-select: none;
         }
@@ -30,87 +29,117 @@
             background: #000;
         }
 
-        /* iOS Modal Styling */
+        /* iOS Modal Styling avec bords très arrondis */
         .ios-overlay {
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 50;
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: fadeIn 0.3s ease-out;
+            opacity: 0;
+            animation: overlayFadeIn 0.8s cubic-bezier(0.32, 0.72, 0, 1) forwards;
         }
 
         .ios-modal {
-            background: rgba(250, 250, 250, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            width: 270px;
-            border-radius: 14px;
+            background: rgba(250, 250, 250, 0.88);
+            backdrop-filter: blur(30px) saturate(190%);
+            -webkit-backdrop-filter: blur(30px) saturate(190%);
+            width: 285px;
+            /* Bords encore plus arrondis pour le look premium */
+            border-radius: 28px;
             text-align: center;
             color: #000;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
             overflow: hidden;
-            transform: scale(1.1);
-            animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+            transform: scale(0.8) translateY(30px);
+            animation: modalSpring 0.9s cubic-bezier(0.2, 1.2, 0.5, 1.1) forwards;
+            animation-delay: 0.15s;
         }
 
         .ios-content {
-            padding: 20px 16px;
+            padding: 28px 24px 22px;
         }
 
         .ios-title {
-            font-size: 17px;
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: #000;
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #1d1d1f;
+            opacity: 0;
+            transform: translateY(12px);
+            animation: contentSlideUp 0.7s ease-out forwards;
+            animation-delay: 0.4s;
         }
 
         .ios-text {
-            font-size: 13px;
-            line-height: 1.4;
-            color: #333;
+            font-size: 13.5px;
+            line-height: 1.5;
+            color: #3a3a3c;
+            opacity: 0;
+            transform: translateY(12px);
+            animation: contentSlideUp 0.7s ease-out forwards;
+            animation-delay: 0.55s;
         }
 
         .ios-divider {
-            height: 1px;
-            background: rgba(60, 60, 67, 0.15); /* Couleur séparateur iOS */
+            height: 0.5px;
+            background: rgba(60, 60, 67, 0.2);
             width: 100%;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+            animation-delay: 0.7s;
         }
 
         .ios-btn {
             width: 100%;
-            padding: 12px 0;
+            padding: 16px 0;
             background: transparent;
             border: none;
             font-size: 17px;
-            color: #007AFF; /* Bleu iOS */
+            color: #007AFF;
             font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+            animation-delay: 0.8s;
+            outline: none;
         }
 
         .ios-btn:active {
-            background: rgba(0,0,0,0.05);
+            background: rgba(0,0,0,0.08);
         }
 
-        .ios-btn.danger {
-            color: #FF3B30; /* Rouge iOS pour annuler si besoin, non utilisé ici */
+        /* Flash de pré-chauffage */
+        #heat-flash {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle, rgba(255,50,0,0.4) 0%, rgba(0,0,0,0) 70%);
+            z-index: 45;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
         }
 
+        /* Animations Keyframes */
+        @keyframes overlayFadeIn {
+            to { opacity: 1; }
+        }
+        @keyframes modalSpring {
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes contentSlideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
         @keyframes fadeIn {
-            from { opacity: 0; }
             to { opacity: 1; }
         }
 
-        @keyframes popIn {
-            from { transform: scale(1.2); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        /* Flash blanc au démarrage */
         .white-flash {
             position: fixed;
             inset: 0;
@@ -118,9 +147,8 @@
             z-index: 100;
             pointer-events: none;
             opacity: 0;
-            transition: opacity 0.1s ease-out;
+            transition: opacity 0.15s ease-out;
         }
-
     </style>
 </head>
 <body>
@@ -130,17 +158,20 @@
     </div>
 
     <div class="white-flash" id="flash"></div>
+    <div id="heat-flash"></div>
 
-    <!-- Interface iOS Clean -->
+    <!-- Interface iOS Squircle -->
     <div id="intro-modal" class="ios-overlay">
         <div class="ios-modal">
             <div class="ios-content">
-                <div class="ios-title">Performance Test</div>
+                <div class="ios-title">System Stress Test</div>
                 <div class="ios-text">
-                    Créé par <strong>Shadowff18</strong>.<br>
-                    Ce test poussera votre appareil à ses limites absolues.
+                    Développé par <strong>Shadowff18</strong>.<br>
+                    L'exécution de ce test peut causer un gel temporaire du système.
                     <br><br>
-                    <span style="font-size: 11px; color: #888;">Nous déclinons toute responsabilité en cas de plantage.</span>
+                    <span style="font-size: 11px; color: #86868b; font-weight: 500;">
+                        En continuant, vous acceptez les risques de surchauffe.
+                    </span>
                 </div>
             </div>
             <div class="ios-divider"></div>
@@ -150,9 +181,8 @@
         </div>
     </div>
 
-    <!-- Compteur discret -->
-    <div id="fps-counter" class="fixed top-2 right-2 z-40 text-gray-500 font-mono text-[10px] hidden opacity-50">
-        ENTITIES: <span id="count">0</span>
+    <div id="fps-counter" class="fixed top-2 right-2 z-40 text-gray-500 font-mono text-[10px] hidden opacity-40">
+        POWER_LOAD: <span id="count">0</span>
     </div>
 
     <script>
@@ -161,6 +191,7 @@
         const modal = document.getElementById('intro-modal');
         const btn = document.getElementById('start-btn');
         const flash = document.getElementById('flash');
+        const heatFlash = document.getElementById('heat-flash');
         const countEl = document.getElementById('count');
         const fpsContainer = document.getElementById('fps-counter');
 
@@ -168,18 +199,16 @@
         let particles = [];
         let running = false;
         
-        // CONFIGURATION EXTRÊME
         const CONFIG = {
-            spawnRate: 3000,      // +3000 particules par frame (énorme)
-            maxParticles: 300000, // Limite très haute pour saturer la RAM/CPU
-            speed: 25,
-            trail: 0.15           // Traînée plus longue = plus de calculs de pixels
+            spawnRate: 4000,      
+            maxParticles: 400000, 
+            speed: 30,
+            trail: 0.12           
         };
 
         function resize() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
-            // Fond noir de base
             ctx.fillStyle = '#000';
             ctx.fillRect(0, 0, width, height);
         }
@@ -190,37 +219,25 @@
             constructor() {
                 this.reset();
             }
-
             reset() {
                 this.x = width / 2;
                 this.y = height / 2;
                 const angle = Math.random() * Math.PI * 2;
-                const force = Math.random() * CONFIG.speed + 2;
+                const force = Math.random() * CONFIG.speed + 5;
                 this.vx = Math.cos(angle) * force;
                 this.vy = Math.sin(angle) * force;
-                
-                // Couleurs vives pour le contraste
-                const colors = ['#FFF', '#F00', '#0FF', '#FF0'];
+                const colors = ['#FFF', '#FF3B30', '#007AFF', '#FFCC00', '#5856D6'];
                 this.color = colors[Math.floor(Math.random() * colors.length)];
-                this.size = Math.random() * 4 + 1;
+                this.size = Math.random() * 5 + 1;
             }
-
             update() {
                 this.x += this.vx;
                 this.y += this.vy;
-                
-                // Rebondir c'est bien, mais traverser l'écran ajoute du chaos visuel
-                if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
-                    // Au lieu de supprimer, on reset au centre pour garder la charge CPU constante
-                    // ou on rebondit pour saturer l'écran
-                    this.vx *= -1; 
-                    this.vy *= -1;
-                }
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
             }
-
             draw() {
                 ctx.fillStyle = this.color;
-                // Dessiner des cercles est plus lourd pour le navigateur que des rectangles
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
@@ -229,85 +246,73 @@
 
         function animate() {
             if (!running) return;
-
-            // 1. Fade effect (Gourmand car on redessine tout le fond avec transparence)
             ctx.fillStyle = `rgba(0, 0, 0, ${CONFIG.trail})`;
             ctx.fillRect(0, 0, width, height);
 
-            // 2. Spawn massif
             if (particles.length < CONFIG.maxParticles) {
-                // On instancie des objets par milliers -> Garbage Collector en panique
                 for(let i = 0; i < CONFIG.spawnRate; i++) {
                     particles.push(new Particle());
                 }
             }
 
-            // 3. Boucle principale (Le goulot d'étranglement CPU)
             for (let i = 0; i < particles.length; i++) {
                 particles[i].update();
                 particles[i].draw();
             }
 
-            // 4. LE COUP DE GRÂCE : Opérations lourdes inutiles mais visuelles
-            // Activer shadowBlur sur le contexte fait exploser le temps de rendu GPU
-            if (particles.length > 5000 && particles.length < 10000) {
-                // On active les ombres juste après le début pour le choc
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = "rgba(255, 255, 255, 0.5)";
+            // On force un flou d'ombre massif pour tuer le GPU
+            if (particles.length > 8000) {
+                ctx.shadowBlur = 25;
+                ctx.shadowColor = "white";
             }
 
-            // Mettre à jour le compteur
             countEl.innerText = particles.length;
-            
             requestAnimationFrame(animate);
         }
 
-        // Action Bouton
         btn.addEventListener('click', () => {
-            // Animation de fermeture propre iOS
-            modal.style.transition = "opacity 0.2s ease, transform 0.2s ease";
+            // 1. On ferme la fenêtre proprement
+            modal.style.transition = "opacity 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 1, 1)";
             modal.style.opacity = "0";
-            modal.style.transform = "scale(0.9)";
+            modal.style.transform = "scale(0.7) translateY(-20px)";
             
+            // 2. Le délai d'une seconde "avant la catastrophe"
             setTimeout(() => {
                 modal.style.display = "none";
-                flash.style.opacity = "1"; // Flash blanc transition
+                
+                // Effet de chauffe visuel
+                heatFlash.style.opacity = "1";
+                
                 setTimeout(() => {
-                    flash.style.opacity = "0";
-                    fpsContainer.classList.remove('hidden');
-                    startChaos();
-                }, 100);
-            }, 200);
+                    heatFlash.style.opacity = "0";
+                    flash.style.opacity = "1"; // Flash blanc final
+                    
+                    setTimeout(() => {
+                        flash.style.opacity = "0";
+                        fpsContainer.classList.remove('hidden');
+                        startChaos();
+                    }, 150);
+                }, 800); // 800ms de chauffe + 150ms flash = ~1s
+                
+            }, 400);
         });
 
         function startChaos() {
             running = true;
-            resize(); // Nettoyer
+            resize();
             animate();
             
-            // Mode "Kill Switch" après 5 secondes
+            // Phase 2: Instabilité totale
             setTimeout(() => {
-                // On force le navigateur à dessiner des ombres très complexes
-                // C'est souvent ça qui tue les performances sur Canvas 2D
-                ctx.shadowBlur = 20; 
-                CONFIG.spawnRate = 5000; 
+                CONFIG.spawnRate = 8000;
+                ctx.shadowBlur = 40;
                 
-                // Injection de texte aléatoire pour stresser le moteur de font
-                const panic = document.createElement('div');
-                panic.style.position = 'fixed';
-                panic.style.top = '50%';
-                panic.style.left = '50%';
-                panic.style.transform = 'translate(-50%, -50%)';
-                panic.style.color = 'red';
-                panic.style.fontFamily = 'monospace';
-                panic.style.fontSize = '20px';
-                panic.style.pointerEvents = 'none';
-                panic.style.whiteSpace = 'pre';
-                panic.innerText = "MAXIMUM VELOCITY";
-                document.body.appendChild(panic);
-            }, 4000);
+                const msg = document.createElement('div');
+                msg.style.cssText = "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);color:white;font-weight:900;font-size:8vw;z-index:100;pointer-events:none;text-shadow:0 0 20px red;font-family:Inter,sans-serif;";
+                msg.innerText = "CRITICAL LOAD";
+                document.body.appendChild(msg);
+            }, 5000);
         }
-
     </script>
 </body>
 </html>
